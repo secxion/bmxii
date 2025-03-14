@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMXII - Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to BMXII (BoardMan12)</h1>
+        <p>Experts in Full-Stack Web & App Design, Neural Networking, Cybersecurity & OSINT.</p>
+    </header>
+
+    <section>
+        <h2>About Us</h2>
+        <p>Operating since 2016, officially licensed in 2024. We provide cutting-edge tech solutions with efficiency and precision.</p>
+
+        <!-- Contact Us Button -->
+        <a href="{{ url_for('contact') }}" class="contact-button">Contact Us</a>
+    </section>
+
+    <footer>
+        <p><!-- Admin Panel Button (Redirects to login first) -->
+            <a href="{{ url_for('admin_login') }}" class="admin-button">Admin Login</a>
+        </p>
+    </footer>
+</body>
+</html>
