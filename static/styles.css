@@ -8,8 +8,8 @@
 
 body {
     font-family: 'Roboto Slab', serif;
-    background: linear-gradient(135deg, #E0DED5, #6A0DAD, #007BFF);
-    color: white;
+    background-color: #f5f5dc; /* Cream background */
+    color: #333; /* Dark text for better readability */
     text-align: center;
     padding: 50px 10px;
 }
@@ -23,7 +23,7 @@ h1, h2 {
 
 /* Header Styling */
 header {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(255, 254, 254, 0.7);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
@@ -34,8 +34,7 @@ section {
     margin: 30px auto;
     padding: 20px;
     max-width: 800px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.9); /* Slightly opaque white */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -52,26 +51,26 @@ form {
 
 input, textarea {
     padding: 12px;
-    border: none;
+    border: 1px solid #ccc; /* Light border */
     border-radius: 5px;
     font-size: 16px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
     outline: none;
     transition: 0.3s;
 }
 
 input::placeholder, textarea::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(0, 0, 0, 0.6);
 }
 
 input:focus, textarea:focus {
-    background: rgba(255, 255, 255, 0.4);
+    border-color: #007BFF; /* Highlight border on focus */
 }
 
-/* Buttons with neon glow effect */
+/* Buttons with modern effects */
 button {
-    background: #6A0DAD;
+    background: #007BFF; /* Blue */
     color: white;
     padding: 12px;
     font-size: 18px;
@@ -79,12 +78,12 @@ button {
     cursor: pointer;
     border-radius: 5px;
     transition: 0.3s ease-in-out;
-    box-shadow: 0 0 10px #6A0DAD;
+    box-shadow: 0 0 10px #007BFF;
 }
 
 button:hover {
-    background: #4A0878;
-    box-shadow: 0 0 15px #4A0878;
+    background: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 0 15px #0056b3;
 }
 
 /* Contact & Admin Buttons */
@@ -98,25 +97,19 @@ button:hover {
     color: white;
     border-radius: 5px;
     transition: 0.3s ease-in-out;
-    position: relative;
-    overflow: hidden;
 }
 
-/* Neon Button Effects */
 .contact-button {
     background-color: #007BFF; /* Blue */
-    box-shadow: 0 0 10px #007BFF;
 }
 
 .admin-button {
     background-color: #28A745; /* Green */
-    box-shadow: 0 0 10px #28A745;
 }
 
 .contact-button:hover, .admin-button:hover {
     opacity: 0.9;
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
 }
 
 /* Flash Messages Styling */
@@ -152,7 +145,6 @@ button:hover {
 
 .logout-button:hover {
     background: darkred;
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
 }
 
 /* Table Styling */
@@ -160,19 +152,19 @@ table {
     width: 90%;
     margin: 20px auto;
     border-collapse: collapse;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
     border-radius: 10px;
     overflow: hidden;
 }
 
 th, td {
     padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 th {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 123, 255, 0.1); /* Light blue for header */
 }
 
 /* Responsive Design */
