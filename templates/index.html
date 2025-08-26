@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMXII - Boardman12 | Neural Networks & Architecture</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gold: #d4af37;
+            --secondary-gold: #b8941f;
+            --accent-gold: #f4e4bc;
+            --deep-black: #000000;
+            --charcoal: #1a1a1a;
+            --dark-gray: #2a2a2a;
+            --light-gray: #cccccc;
+            --text-white: #ffffff;
+            --text-cream: #f8f6f0;
+            --border-gold: #8b7355;
+            --deep-blue: #001f3f;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-white);
+            background-color: var(--deep-black);
+            position: relative;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+       
+        .popup-modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.7); 
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .popup-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .popup-content {
+            background-color: #1a1a2e;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid #8b7355;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .popup-modal.active .popup-content {
+            transform: translateY(0);
+        }
+
+        .popup-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .popup-icon .fa-check-circle {
+            color: #22c55e; /* Green for success */
+        }
+
+        .popup-icon .fa-times-circle {
+            color: #ef4444; /* Red for error */
+        }
+
+        .popup-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary-gold);
+            margin-bottom: 15px;
+        }
+
+        .popup-message {
+            font-size: 1rem;
+            color: var(--text-cream);
+            margin-bottom: 25px;
+        }
+
+        .popup-close-btn {
+            background-color: var(--primary-gold);
+            color: var(--deep-black);
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .popup-close-btn:hover {
+            background-color: var(--secondary-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Basic styles for sections, hero, navbar, etc. - ensure these are in style.css or added here */
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo img {
+            height: 50px; /* Adjust as needed */
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-menu li a {
+            color: var(--text-white);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu li a:hover {
+            color: var(--primary-gold);
+        }
+
+        .hero {
+            background: url('https://placehold.co/1920x1080/1a1a1a/cccccc?text=BMXII+Hero+Image') no-repeat center center/cover; /* Placeholder, replace with actual image */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            z-index: 1;
+            padding: 2rem;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 10px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .hero h3 {
+            font-size: 1.8rem;
+            color: var(--text-cream);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+            color: var(--light-gray);
+        }
+
+        .cta-button {
+            background-color: var(--primary-gold);
+            color: var(--deep-black);
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .cta-button:hover {
+            background-color: var(--secondary-gold);
+            transform: translateY(-2px);
+        }
+
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary-gold);
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+        }
+
+        #about .section-title::after {
+            left: 0;
+            transform: translateX(0);
+        }
+
+        .about-content {
+            margin-bottom: 2rem;
+        }
+
+        .about-content p {
+            margin-bottom: 1rem;
+            color: var(--text-cream);
+        }
+
+        .about-content .highlight {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .about-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .about-image {
+            height: 200px;
+            background-color: var(--dark-gray); /* Placeholder color */
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .about-image-1 {
+            background-image: url('https://placehold.co/600x400/2a2a2a/cccccc?text=Architecture+Image'); /* Placeholder */
+        }
+
+        .about-image-2 {
+            background-image: url('https://placehold.co/600x400/2a2a2a/cccccc?text=AI+Network+Image'); /* Placeholder */
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background-color: var(--charcoal);
+            border: 1px solid var(--border-gold);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .service-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--text-white);
+            margin-bottom: 0.75rem;
+        }
+
+        .service-description {
+            color: var(--light-gray);
+            font-size: 0.95rem;
+        }
+
+        .contact-form {
+            background-color: var(--charcoal);
+            border: 1px solid var(--border-gold);
+            border-radius: 15px;
+            padding: 3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-cream);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--dark-gray);
+            border-radius: 5px;
+            background-color: var(--deep-black);
+            color: var(--text-white);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+        }
+
+        .submit-btn {
+            background-color: var(--primary-gold);
+            color: var(--deep-black);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--secondary-gold);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background-color: var(--dark-gray);
+            cursor: not-allowed;
+        }
+
+        .footer {
+            background-color: var(--charcoal);
+            padding: 2rem;
+            text-align: center;
+            color: var(--light-gray);
+            border-top: 1px solid var(--dark-gray);
+        }
+
+        .social-links {
+            margin-bottom: 1rem;
+        }
+
+        .social-link {
+            color: var(--text-white);
+            font-size: 1.5rem;
+            margin: 0 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--primary-gold);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-direction: column;
+                position: absolute;
+                top: 70px; /* Adjust based on navbar height */
+                left: 0;
+                width: 100%;
+                background-color: rgba(0, 0, 0, 0.9);
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .nav-menu.active {
+                transform: translateX(0);
+            }
+
+            .nav-menu li {
+                text-align: center;
+                padding: 1rem 0;
+            }
+
+            .hamburger {
+                display: block;
+                font-size: 1.8rem;
+                color: var(--text-white);
+                cursor: pointer;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero h3 {
+                font-size: 1.4rem;
+            }
+
+            .section {
+                padding: 3rem 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="BMXII Logo" onerror="this.style.display='none'">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <!-- Add admin link for testing in dev mode -->
+                <li><a href="/admin" class="nav-link">Admin</a></li> 
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Boardman12</h1>
+            <h3>Architects of the Digital & Physical Future</h3>
+            <p class="hero-subtitle">Pioneering Excellence in Neural Networks, Architectural Innovation & Sustainable Technology Solutions for the Modern World</p>
+            <a href="#contact" class="cta-button">Begin Your Journey</a>
+        </div>
+    </section>
+
+    <section id="about" class="section reveal">
+        <div class="about-content">
+            <h2 class="section-title" style="text-align: left; margin-left: 0;">About BMXII</h2>
+            <p>
+                <span class="highlight">Boardman12 (BMXII)</span> stands as a distinguished technology and architectural organization, 
+                specializing in cutting-edge neural networking solutions, comprehensive web and mobile application development, 
+                innovative ready-made house delivery systems, and advanced piezoelectric tile distribution with professional installations.
+            </p>
+            <p>
+                We expertly bridge the sophisticated gap between <span class="highlight">innovative technology</span> and 
+                <span class="highlight">sustainable architecture</span>, creating seamless integrations that define the future of intelligent living.
+            </p>
+        </div>
+        <div class="about-images">
+            <div class="about-image about-image-1"></div>
+            <div class="about-image about-image-2"></div>
+        </div>
+    </section>
+
+    <section id="services" class="section reveal">
+        <h2 class="section-title">Our Expertise</h2>
+        <div class="services-grid">
+            <div class="service-card reveal">
+                <div class="service-icon"><i class="fas fa-brain"></i></div>
+                <h3 class="service-title">Advanced Neural Networking</h3>
+                <p class="service-description">Sophisticated AI solutions featuring advanced neural network architecture, intelligent system implementations, and cutting-edge artificial intelligence.</p>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon"><i class="fas fa-code"></i></div>
+                <h3 class="service-title">Premium Web & Mobile Development</h3>
+                <p class="service-description">Full-stack web and mobile applications utilizing modern frameworks and industry-leading development practices for responsive, cross-platform solutions.</p>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon"><i class="fas fa-home"></i></div>
+                <h3 class="service-title">Luxury Ready-Made Houses</h3>
+                <p class="service-description">Premium, eco-friendly homes with smart architectural design, seamlessly integrated with sustainable living solutions and modern amenities.</p>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon"><i class="fas fa-bolt"></i></div>
+                <h3 class="service-title">Piezoelectric Energy Solutions</h3>
+                <p class="service-description">Professional distribution and expert installation of innovative energy-harvesting piezoelectric tiles for clean, sustainable power generation.</p>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon"><i class="fas fa-network-wired"></i></div>
+                <h3 class="service-title">Enterprise Network Solutions</h3>
+                <p class="service-description">Comprehensive enterprise networking, advanced infrastructure design, robust security, and sophisticated network optimization strategies.</p>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon"><i class="fas fa-tools"></i></div>
+                <h3 class="service-title">Strategic Technical Consulting</h3>
+                <p class="service-description">Expert consultation on technology integration, system architecture planning, and digital transformation strategies tailored to your unique requirements.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section reveal">
+        <h2 class="section-title">Connect With Excellence</h2>
+        <form class="contact-form" id="contactForm">
+            <div id="messageContainer"></div> 
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your complete name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your professional email">
+            </div>
+            <div class="form-group">
+                <label for="phone">Contact Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your contact number">
+            </div>
+            <div class="form-group">
+                <label for="service">Service of Interest</label>
+                <select id="service" name="service">
+                    <option value="">Select your area of interest</option>
+                    <option value="neural-networking">Advanced Neural Networking</option>
+                    <option value="web-mobile-dev">Premium Web & Mobile Development</option>
+                    <option value="ready-made-houses">Luxury Ready-Made Houses</option>
+                    <option value="piezoelectric-tiles">Piezoelectric Energy Solutions</option>
+                    <option value="network-solutions">Enterprise Network Solutions</option>
+                    <option value="technical-consulting">Strategic Technical Consulting</option>
+                    <option value="other">Other Specialized Services</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="message">Detailed Message *</label>
+                <textarea id="message" name="message" rows="6" required placeholder="Please provide detailed information about your project requirements..."></textarea>
+            </div>
+            <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Inquiry</button>
+        </form>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p>&copy; 2019 - 2025 Boardman12 (BMXII). All rights reserved. | bmxii.org | e-Architecture</p>
+        </div>
+    </footer>
+
+    <div id="popupModal" class="popup-modal">
+        <div class="popup-content">
+            <div id="popupIcon" class="popup-icon"></div>
+            <h2 id="popupTitle" class="popup-title"></h2>
+            <p id="popupMessage" class="popup-message"></p>
+            <button id="popupCloseBtn" class="popup-close-btn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Logo loading - The JS here will work correctly after the img src is updated with url_for
+            const logoImg = document.querySelector('.logo img');
+            if (logoImg) {
+                logoImg.onload = () => logoImg.classList.add('loaded');
+                if (logoImg.complete) logoImg.classList.add('loaded');
+            }
+
+            // Mobile Navigation
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.querySelector('.nav-menu');
+            if (hamburger && navMenu) { // Added null checks
+                hamburger.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                });
+            }
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu) navMenu.classList.remove('active'); // Added null check
+                });
+            });
+
+            // On-Scroll Reveal Animation
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                revealElements.forEach(el => {
+                    const elementTop = el.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - 100) {
+                        el.classList.add('active');
+                    }
+                });
+            };
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll(); // Run once on load to reveal elements already in view
+
+            // Contact Form Handler with Popup
+            const contactForm = document.getElementById('contactForm');
+            const modal = document.getElementById('popupModal');
+            const closeBtn = document.getElementById('popupCloseBtn');
+            const popupIcon = document.getElementById('popupIcon');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupMessage = document.getElementById('popupMessage');
+
+            const showPopup = (success, title, message) => {
+                popupIcon.innerHTML = success ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-times-circle"></i>';
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                modal.classList.add('active');
+            };
+
+            const hidePopup = () => {
+                modal.classList.remove('active');
+            };
+
+            closeBtn.addEventListener('click', hidePopup);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    hidePopup();
+                }
+            });
+
+            if (contactForm) { // Ensure contactForm exists before adding listener
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(e.target);
+                    const data = Object.fromEntries(formData);
+                    
+                    const submitBtn = e.target.querySelector('.submit-btn');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    submitBtn.disabled = true;
+                    
+                    try {
+                        const response = await fetch('/api/contact', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data)
+                        });
+                        
+                        if (response.ok) {
+                            showPopup(
+                                true,
+                                'Excellence Acknowledged!',
+                                'Your inquiry has been received successfully. Our team will contact you shortly.'
+                            );
+                            e.target.reset(); // Clear the form
+                        } else {
+                            const errorData = await response.json(); // Try to parse error message from server
+                            throw new Error(errorData.error || 'Server responded with an error.');
+                        }
+                    } catch (error) {
+                        showPopup(
+                            false,
+                            'Submission Error',
+                            error.message || 'We encountered an issue submitting your inquiry. Please check your connection and try again.'
+                        );
+                        console.error('Form submission error:', error);
+                    } finally {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

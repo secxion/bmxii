@@ -1,0 +1,14 @@
+{
+  "name": "BMXII",
+  "version": "1.0.0",
+  "description": "BMXII",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "python app.py"
+  },
+  "devDependencies": {
+    "vite": "^4.4.9"
+  }
+}
